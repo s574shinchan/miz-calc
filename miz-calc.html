@@ -62,6 +62,9 @@
     const container = document.getElementById('checkboxContainer');
 
     prices.forEach((price, index) => { 
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2 w-full p-2 rounded-lg';
+
       // 체크박스
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
@@ -111,7 +114,6 @@
       div.appendChild(checkbox);
       div.appendChild(labelWrapper);
       div.appendChild(inputGroup);
-      container.appendChild(div);
     });
 
     function adjustQuantity(index, delta) {
