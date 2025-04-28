@@ -92,7 +92,7 @@
 
       // 버튼/수량 입력 그룹
       const inputGroup = document.createElement('div');
-      inputGroup.className = 'flex items-center gap-2 flex-1';
+      inputGroup.className = 'flex items-center gap-2 flex-1 justify-end';
 
       const plusBtn = document.createElement('button');
       plusBtn.type = 'button';
@@ -108,7 +108,7 @@
       quantity.type = 'number';
       quantity.min = 1;
       quantity.value = 1;
-      quantity.className = 'flex-1 min-w-0 max-w-[80px] text-center border rounded-lg p-2 text-base';
+      quantity.className = 'w-16 text-center border rounded-lg p-2 text-base';
       quantity.id = `qty${index}`;
 
       const minusBtn = document.createElement('button');
