@@ -62,13 +62,6 @@
     const container = document.getElementById('checkboxContainer');
 
     prices.forEach((price, index) => { 
-      const div = document.createElement('div');
-      div.className = 'flex items-center gap-2 w-full p-2 rounded-lg bg-no-repeat bg-contain bg-right';
-      div.style.backgroundImage = "url('./images/iceorb.png')"; // 구슬 이미지 경로
-      div.style.backgroundSize = "80px"; // 구슬 사이즈 조정
-      div.style.backgroundPosition = "right center"; // 오른쪽 중앙 정렬
-      div.style.backgroundRepeat = "no-repeat";
-
       // 체크박스
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
