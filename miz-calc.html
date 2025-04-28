@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>금액 계산기</title>
+  <title>WOS 미즈계산기</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* 수량 입력란(number input) 화살표 제거 */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
     input[type=number] {
-      -moz-appearance: textfield; /* Firefox */
+      -moz-appearance: textfield;
     }
   </style>
 </head>
 <body class="bg-gray-50 p-6 font-sans text-gray-700">
   <div class="max-w-2xl mx-auto bg-gray-100 p-6 rounded-2xl shadow-md">
-    <h2 class="text-3xl font-bold mb-4 text-center text-gray-800">💰 미즈 계산기</h2>
+    <h2 class="text-3xl font-bold mb-4 text-center text-gray-800">💳 미즈 계산기</h2>
 
     <!-- 상단 조작 버튼 -->
     <div class="flex gap-2 mb-4">
@@ -27,7 +26,7 @@
       <button type="button" onclick="resetForm()" class="px-3 py-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm transition">리셋</button>
     </div>
 
-    <!-- 체크박스+수량 입력을 프레임으로 감싸기 -->
+    <!-- 체크박스+수량 입력 프레임 -->
     <div class="bg-white border border-gray-300 rounded-xl p-4 mb-6">
       <form id="priceForm" class="space-y-4">
         <div id="checkboxContainer" class="space-y-4"></div>
@@ -70,33 +69,33 @@
       leftSide.appendChild(labelElement);
 
       const quantityWrapper = document.createElement('div');
-      quantityWrapper.className = 'flex items-center gap-2';
+      quantityWrapper.className = 'flex items-center w-full gap-1';
 
       const plusBtn = document.createElement('button');
       plusBtn.type = 'button';
       plusBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
       `;
-      plusBtn.className = 'p-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition';
+      plusBtn.className = 'flex-1 min-w-[30px] bg-gray-300 hover:bg-gray-400 rounded-lg p-1 transition';
       plusBtn.onclick = () => adjustQuantity(index, 1);
 
       const quantity = document.createElement('input');
       quantity.type = 'number';
       quantity.min = 1;
       quantity.value = 1;
-      quantity.className = 'border rounded-lg p-2 w-20 text-center text-lg appearance-none';
+      quantity.className = 'flex-2 min-w-[50px] text-center border rounded-lg p-2 text-base appearance-none';
       quantity.id = `qty${index}`;
 
       const minusBtn = document.createElement('button');
       minusBtn.type = 'button';
       minusBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
         </svg>
       `;
-      minusBtn.className = 'p-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition';
+      minusBtn.className = 'flex-1 min-w-[30px] bg-gray-300 hover:bg-gray-400 rounded-lg p-1 transition';
       minusBtn.onclick = () => adjustQuantity(index, -1);
 
       quantityWrapper.appendChild(plusBtn);
@@ -147,20 +146,6 @@
         document.getElementById(`chk${index}`).checked = true;
       });
     }
-  </script>
-  
-  <script>
-    //페이지 소스보기, 개발자도구 단축키 막기
-    document.addEventListener("contextmenu", event => event.preventDefault());
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "F12" ||
-          (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
-          (e.ctrlKey && (e.key === "U" || e.key === "S"))) 
-      {
-        e.preventDefault();
-      }
-    });
-  
   </script>
 </body>
 </html>
