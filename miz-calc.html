@@ -94,9 +94,15 @@
       minusBtn.className = 'w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded flex justify-center items-center';
       minusBtn.onclick = () => adjustQuantity(index, -1);
 
+      const orbImg = document.createElement('img');
+      orbImg.src = './images/iceorb.png'; // 여기에 깃허브에 업로드한 경로
+      orbImg.alt = 'Ice Orb';
+      orbImg.className = 'w-10 h-10 ml-2 flex-shrink-0';
+
       inputGroup.appendChild(plusBtn);
       inputGroup.appendChild(quantity);
       inputGroup.appendChild(minusBtn);
+      inputGroup.appendChild(orbImg);
 
       div.appendChild(checkbox);
       div.appendChild(labelWrapper);
