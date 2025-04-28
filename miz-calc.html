@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <title>WOS 패키지 금액 계산</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -64,9 +63,10 @@
       labelWrapper.className = 'w-28 text-right text-lg font-semibold flex-shrink-0';
       labelWrapper.innerText = labels[index].toLocaleString();
 
-      // 오른쪽 버튼/수량 입력 그룹
+      // 오른쪽 버튼/수량 입력 그룹 (여기에 배경 추가)
       const inputGroup = document.createElement('div');
-      inputGroup.className = 'flex items-center gap-2 flex-1';
+      inputGroup.className = 'flex items-center gap-2 flex-1 bg-no-repeat bg-contain bg-right';
+      inputGroup.style.backgroundImage = "url('./images/iceorb.png')"; // 여기 구슬 경로 맞춰야 함
 
       const plusBtn = document.createElement('button');
       plusBtn.type = 'button';
@@ -95,15 +95,9 @@
       minusBtn.className = 'w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded flex justify-center items-center';
       minusBtn.onclick = () => adjustQuantity(index, -1);
 
-      const orbImg = document.createElement('img');
-      orbImg.src = './images/iceorb.png'; // 여기에 깃허브에 업로드한 경로
-      orbImg.alt = 'Ice Orb';
-      orbImg.className = 'w-10 h-10 ml-2 flex-shrink-0';
-
       inputGroup.appendChild(plusBtn);
       inputGroup.appendChild(quantity);
       inputGroup.appendChild(minusBtn);
-      inputGroup.appendChild(orbImg);
 
       div.appendChild(checkbox);
       div.appendChild(labelWrapper);
