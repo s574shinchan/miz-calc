@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>금액 계산기</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 수량 입력란(number input) 화살표 제거 */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield; /* Firefox */
+    }
+  </style>
+</head>
+<body class="bg-gray-50 p-6 font-sans text-gray-700">
+  <div class="max-w-2xl mx-auto bg-gray-100 p-6 rounded-2xl shadow-md">
+    <h2 class="text-3xl font-bold mb-4 text-center text-gray-800">💰 미즈 계산기</h2>
+
+    <!-- 상단 조작 버튼 -->
+    <div class="flex gap-2 mb-4">
+      <button type="button" onclick="selectAll()" class="px-3 py-2 bg-green-400 hover:bg-green-500 text-white font-semibold rounded-md text-sm transition">전체 선택</button>
+      <button type="button" onclick="resetForm()" class="px-3 py-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm transition">리셋</button>
+    </div>
+
+    <!-- 체크박스+수량 입력을 프레임으로 감싸기 -->
+    <div class="bg-white border border-gray-300 rounded-xl p-4 mb-6">
+      <form id="priceForm" class="space-y-4">
+        <div id="checkboxContainer" class="space-y-4"></div>
+      </form>
+    </div>
+
+    <!-- 하단 계산하기 버튼 -->
+    <button type="button" onclick="calculateTotal()" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl text-lg transition">계산하기</button>
+
+    <!-- 총합 표시 -->
+    <div class="mt-6 text-center text-2xl font-bold">
+      총합: <span id="totalAmount">0</span> 원
+    </div>
+  </div>
+
+  <script>
+    const labels = [1500, 3000, 4400, 7500, 15000, 30000, 79000, 149000];
+    const prices = [1250, 2500, 3750, 6250, 12500, 25000, 62500, 125000];
+    const container = document.getElementById('checkboxContainer');
+
+    prices.forEach((price, index) => {
+      const div = document.createElement('div');
+      div.className = 'flex items-center justify-between gap-4';
+
+      const leftSide = document.createElement('div');
+      leftSide.className = 'flex items-center gap-4 flex-shrink-0';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `chk${index}`;
+      checkbox.dataset.price = price;
+      checkbox.className = 'w-5 h-5';
+
+      const labelElement = document.createElement('label');
+      labelElement.htmlFor = `chk${index}`;
+      labelElement.innerText = labels[index].toLocaleString();
+      labelElement.className = 'text-lg font-medium';
+
+      leftSide.appendChild(checkbox);
+      leftSide.appendChild(labelElement);
+
+      const quantityWrapper = document.createElement('div');
+      quantityWrapper.className = 'flex items-center gap-2';
+
+      const plusBtn = document.createElement('button');
+      plusBtn.type = 'button';
+      plusBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      `;
+      plusBtn.className = 'p-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition';
+      plusBtn.onclick = () => adjustQuantity(index, 1);
+
+      const quantity = document.createElement('input');
+      quantity.type = 'number';
+      quantity.min = 1;
+      quantity.value = 1;
+      quantity.className = 'border rounded-lg p-2 w-20 text-center text-lg appearance-none';
+      quantity.id = `qty${index}`;
+
+      const minusBtn = document.createElement('button');
+      minusBtn.type = 'button';
+      minusBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+        </svg>
+      `;
+      minusBtn.className = 'p-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition';
+      minusBtn.onclick = () => adjustQuantity(index, -1);
+
+      quantityWrapper.appendChild(plusBtn);
+      quantityWrapper.appendChild(quantity);
+      quantityWrapper.appendChild(minusBtn);
+
+      div.appendChild(leftSide);
+      div.appendChild(quantityWrapper);
+      container.appendChild(div);
+    });
+
+    function adjustQuantity(index, delta) {
+      const quantity = document.getElementById(`qty${index}`);
+      let current = parseInt(quantity.value || 1);
+      current += delta;
+      if (current < 1) current = 1;
+      quantity.value = current;
+    }
+
+    function calculateTotal() {
+      let total = 0;
+      let checkedAny = false;
+      prices.forEach((price, index) => {
+        const checkbox = document.getElementById(`chk${index}`);
+        const quantity = document.getElementById(`qty${index}`);
+        if (checkbox.checked) {
+          checkedAny = true;
+          total += price * parseInt(quantity.value || 1);
+        }
+      });
+      if (!checkedAny) {
+        alert('체크된 항목이 없습니다.');
+        return;
+      }
+      document.getElementById('totalAmount').innerText = total.toLocaleString();
+    }
+
+    function resetForm() {
+      prices.forEach((_, index) => {
+        document.getElementById(`chk${index}`).checked = false;
+        document.getElementById(`qty${index}`).value = 1;
+      });
+      document.getElementById('totalAmount').innerText = '0';
+    }
+
+    function selectAll() {
+      prices.forEach((_, index) => {
+        document.getElementById(`chk${index}`).checked = true;
+      });
+    }
+  </script>
+</body>
+</html>
