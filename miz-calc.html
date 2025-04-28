@@ -29,34 +29,34 @@
   </style>
 </head>
 <body class="bg-gray-50 p-6 font-sans text-gray-700">
-  <div class="max-w-2xl mx-auto bg-gray-100 p-6 rounded-2xl shadow-md">
-    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">💳 미즈 계산기</h2>
+  <div class="max-w-2xl mx-auto bg-gray-100 p-6 rounded-2xl shadow-md relative overflow-hidden">
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800 relative z-10">💳 미즈 계산기</h2>
 
-    <div id="priceForm" class="relative space-y-4">
-      <!-- 워터마크 배경 -->
-      <div class="absolute inset-0 bg-[url('./images/iceorb.png')] bg-no-repeat bg-center bg-contain opacity-10 pointer-events-none"></div>
-
+    <div id="priceForm" class="relative space-y-4 z-10">
       <!-- 상단 조작 버튼 -->
-      <div class="flex gap-2 mb-4 relative z-10">
+      <div class="flex gap-2 mb-4">
         <button type="button" onclick="selectAll()" class="px-4 py-2 bg-green-400 hover:bg-green-500 text-white font-semibold rounded-md text-sm transition">전체 선택</button>
         <button type="button" onclick="resetForm()" class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm transition">리셋</button>
       </div>
 
       <!-- 체크박스+수량 입력 프레임 -->
-      <div class="bg-white border border-gray-300 rounded-xl p-4 mb-6 relative z-10">
-        <form class="space-y-4"> <!-- id="priceForm" 제거 -->
+      <div class="bg-white border border-gray-300 rounded-xl p-4 mb-6">
+        <form class="space-y-4">
           <div id="checkboxContainer" class="space-y-4"></div>
         </form>
       </div>
 
       <!-- 하단 계산하기 버튼 -->
-      <button type="button" onclick="calculateTotal()" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl text-lg transition relative z-10">계산하기</button>
+      <button type="button" onclick="calculateTotal()" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl text-lg transition">계산하기</button>
 
       <!-- 총합 표시 -->
-      <div class="mt-6 text-center text-2xl font-bold relative z-10">
+      <div class="mt-6 text-center text-2xl font-bold">
         총합: <span id="totalAmount">0</span> 원
       </div>
     </div>
+
+    <!-- 워터마크 배경 -->
+    <div class="absolute inset-0 bg-[url('./images/iceorb.png')] bg-no-repeat bg-center bg-contain opacity-10 pointer-events-none"></div>
   </div>
 
   <script>
@@ -118,7 +118,7 @@
       div.appendChild(labelWrapper);
       div.appendChild(inputGroup);
 
-      container.appendChild(div); // ✅ div를 container에 추가해야 화면에 보인다
+      container.appendChild(div);
     });
 
     function adjustQuantity(index, delta) {
