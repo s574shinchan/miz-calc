@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WOS 미즈계산기</title>
+  <title>WOS 패키지 금액 계산</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* 숫자 입력칸 스핀 제거 */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -13,16 +14,6 @@
     }
     input[type=number] {
       -moz-appearance: textfield;
-    }
-    body {
-      background-image: url('images/watermark.png');
-      background-repeat: repeat;
-      background-position: center;
-      background-size: auto;
-      background-attachment: fixed;
-      background-color: #f3f3f3;
-      overflow-x: hidden;
-      margin: 0;
     }
   </style>
 </head>
@@ -32,8 +23,8 @@
 
     <!-- 상단 조작 버튼 -->
     <div class="flex gap-2 mb-4">
-      <button type="button" onclick="selectAll()" class="px-3 py-2 bg-green-400 hover:bg-green-500 text-white font-semibold rounded-md text-sm transition">전체 선택</button>
-      <button type="button" onclick="resetForm()" class="px-3 py-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm transition">리셋</button>
+      <button type="button" onclick="selectAll()" class="px-4 py-2 bg-green-400 hover:bg-green-500 text-white font-semibold rounded-md text-sm transition">전체 선택</button>
+      <button type="button" onclick="resetForm()" class="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm transition">리셋</button>
     </div>
 
     <!-- 체크박스+수량 입력 프레임 -->
@@ -59,27 +50,16 @@
 
     prices.forEach((price, index) => {
       const div = document.createElement('div');
-      div.className = 'flex items-center justify-between gap-4';
+      div.className = 'flex items-center gap-2 w-full';
 
-      const leftSide = document.createElement('div');
-      leftSide.className = 'flex items-center gap-4 flex-shrink-0';
+      // 왼쪽 라벨 부분
+      const labelWrapper = document.createElement('div');
+      labelWrapper.className = 'w-28 text-right text-lg font-semibold';
+      labelWrapper.innerText = labels[index].toLocaleString();
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = `chk${index}`;
-      checkbox.dataset.price = price;
-      checkbox.className = 'w-5 h-5';
-
-      const labelElement = document.createElement('label');
-      labelElement.htmlFor = `chk${index}`;
-      labelElement.innerText = labels[index].toLocaleString();
-      labelElement.className = 'text-lg font-medium';
-
-      leftSide.appendChild(checkbox);
-      leftSide.appendChild(labelElement);
-
-      const quantityWrapper = document.createElement('div');
-      quantityWrapper.className = 'flex items-center w-full gap-1';
+      // 오른쪽 버튼/수량 입력 그룹
+      const inputGroup = document.createElement('div');
+      inputGroup.className = 'flex items-center gap-2 flex-1';
 
       const plusBtn = document.createElement('button');
       plusBtn.type = 'button';
@@ -88,14 +68,14 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
       `;
-      plusBtn.className = 'flex-1 min-w-[30px] bg-gray-300 hover:bg-gray-400 rounded-lg p-1 transition';
+      plusBtn.className = 'w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded flex justify-center items-center';
       plusBtn.onclick = () => adjustQuantity(index, 1);
 
       const quantity = document.createElement('input');
       quantity.type = 'number';
       quantity.min = 1;
       quantity.value = 1;
-      quantity.className = 'flex-2 min-w-[50px] text-center border rounded-lg p-2 text-base appearance-none';
+      quantity.className = 'flex-1 min-w-0 text-center border rounded-lg p-2 text-base';
       quantity.id = `qty${index}`;
 
       const minusBtn = document.createElement('button');
@@ -105,15 +85,15 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
         </svg>
       `;
-      minusBtn.className = 'flex-1 min-w-[30px] bg-gray-300 hover:bg-gray-400 rounded-lg p-1 transition';
+      minusBtn.className = 'w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded flex justify-center items-center';
       minusBtn.onclick = () => adjustQuantity(index, -1);
 
-      quantityWrapper.appendChild(plusBtn);
-      quantityWrapper.appendChild(quantity);
-      quantityWrapper.appendChild(minusBtn);
+      inputGroup.appendChild(plusBtn);
+      inputGroup.appendChild(quantity);
+      inputGroup.appendChild(minusBtn);
 
-      div.appendChild(leftSide);
-      div.appendChild(quantityWrapper);
+      div.appendChild(labelWrapper);
+      div.appendChild(inputGroup);
       container.appendChild(div);
     });
 
@@ -131,7 +111,7 @@
       prices.forEach((price, index) => {
         const checkbox = document.getElementById(`chk${index}`);
         const quantity = document.getElementById(`qty${index}`);
-        if (checkbox.checked) {
+        if (checkbox && checkbox.checked) {
           checkedAny = true;
           total += price * parseInt(quantity.value || 1);
         }
@@ -145,15 +125,16 @@
 
     function resetForm() {
       prices.forEach((_, index) => {
-        document.getElementById(`chk${index}`).checked = false;
-        document.getElementById(`qty${index}`).value = 1;
+        const quantity = document.getElementById(`qty${index}`);
+        if (quantity) quantity.value = 1;
       });
       document.getElementById('totalAmount').innerText = '0';
     }
 
     function selectAll() {
       prices.forEach((_, index) => {
-        document.getElementById(`chk${index}`).checked = true;
+        const checkbox = document.getElementById(`chk${index}`);
+        if (checkbox) checkbox.checked = true;
       });
     }
   </script>
