@@ -19,7 +19,7 @@
 </head>
 <body class="bg-gray-50 p-6 font-sans text-gray-700">
   <div class="max-w-2xl mx-auto bg-gray-100 p-6 rounded-2xl shadow-md">
-    <h2 class="text-3xl font-bold mb-4 text-center text-gray-800">💳 미즈 계산기</h2>
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">💳 미즈 계산기</h2>
 
     <!-- 상단 조작 버튼 -->
     <div class="flex gap-2 mb-4">
@@ -52,9 +52,15 @@
       const div = document.createElement('div');
       div.className = 'flex items-center gap-2 w-full';
 
-      // 왼쪽 라벨 부분
+      // 체크박스
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `chk${index}`;
+      checkbox.className = 'w-5 h-5 flex-shrink-0';
+
+      // 라벨
       const labelWrapper = document.createElement('div');
-      labelWrapper.className = 'w-28 text-right text-lg font-semibold';
+      labelWrapper.className = 'w-28 text-right text-lg font-semibold flex-shrink-0';
       labelWrapper.innerText = labels[index].toLocaleString();
 
       // 오른쪽 버튼/수량 입력 그룹
@@ -75,7 +81,7 @@
       quantity.type = 'number';
       quantity.min = 1;
       quantity.value = 1;
-      quantity.className = 'flex-1 min-w-0 text-center border rounded-lg p-2 text-base';
+      quantity.className = 'flex-1 min-w-0 max-w-[80px] text-center border rounded-lg p-2 text-base';
       quantity.id = `qty${index}`;
 
       const minusBtn = document.createElement('button');
@@ -92,6 +98,7 @@
       inputGroup.appendChild(quantity);
       inputGroup.appendChild(minusBtn);
 
+      div.appendChild(checkbox);
       div.appendChild(labelWrapper);
       div.appendChild(inputGroup);
       container.appendChild(div);
@@ -125,7 +132,9 @@
 
     function resetForm() {
       prices.forEach((_, index) => {
+        const checkbox = document.getElementById(`chk${index}`);
         const quantity = document.getElementById(`qty${index}`);
+        if (checkbox) checkbox.checked = false;
         if (quantity) quantity.value = 1;
       });
       document.getElementById('totalAmount').innerText = '0';
