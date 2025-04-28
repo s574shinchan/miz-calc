@@ -1,0 +1,224 @@
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <title>WOS 패키지 금액 계산</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* 숫자 입력칸 스핀 제거 */
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
+      body {
+        background-image: url('images/watermark.png');
+        background-repeat: repeat;
+        background-position: center;
+        background-size: auto;
+        background-attachment: fixed;
+        background-color: #f3f3f3;
+        overflow-x: hidden;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 p-6 text-gray-700">
+    <div class="max-w-5xl mx-auto bg-gray-100 p-6 rounded-2xl shadow-md relative overflow-hidden">
+      <div class="absolute inset-0 bg-[url('./images/iceorb.png')] bg-no-repeat bg-center bg-contain opacity-10 pointer-events-none"></div>
+      <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">💳 미즈 계산기</h2>
+  
+      <div class="flex flex-col md:flex-row gap-6 bg-white p-4 rounded-xl border border-gray-300">
+        
+        <!-- 왼쪽 -->
+        <div class="flex-1 flex flex-col space-y-2 md:border-r border-gray-300 md:pr-6">
+          <div class="relative mb-2 h-10 flex items-center">
+            <div class="absolute left-0 flex gap-2">
+              <button type="button" onclick="selectAll('l')" class="px-3 py-1 bg-green-400 hover:bg-green-500 text-white font-semibold rounded-md text-sm">전체 선택</button>
+              <button type="button" onclick="resetForm('l')" class="px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm">리셋</button>
+            </div>
+            <div class="absolute inset-x-0 text-center text-xl font-bold text-blue-600 pointer-events-none">
+              미즈 결제금액
+            </div>
+          </div>
+          <div id="leftContainer" class="space-y-2"></div>
+  
+          <div class="text-center font-bold mt-4">총합: <span id="lTotal">0</span> 원</div>
+          <button type="button" onclick="calculateLeft()" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-xl text-lg transition mt-2">계산하기</button>
+        </div>
+  
+        <!-- 오른쪽 -->
+        <div class="flex-1 flex flex-col space-y-2 md:pl-6">
+          <div class="relative mb-2 h-10 flex items-center">
+            <div class="absolute left-0 flex gap-2">
+              <button type="button" onclick="selectAll('r')" class="px-3 py-1 bg-green-400 hover:bg-green-500 text-white font-semibold rounded-md text-sm">전체 선택</button>
+              <button type="button" onclick="resetForm('r')" class="px-3 py-1 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-md text-sm">리셋</button>
+            </div>
+            <div class="absolute inset-x-0 text-center text-xl font-bold text-blue-600 pointer-events-none">
+              개인 결제금액
+            </div>
+          </div>
+  
+          <div id="rightContainer" class="space-y-2"></div>
+  
+          <div class="text-center font-bold mt-4">총합: <span id="rTotal">0</span> 원</div>
+          <button type="button" onclick="calculateRight()" class="w-full bg-blue-400 hover:bg-blue-500 text-white font-semibold py-2 rounded-xl text-lg transition mt-2">계산하기</button>
+        </div>
+      </div>
+        <footer class="text-center text-xs text-gray-500 mt-5">
+          본 사이트는 미즈님 결재의 편의성을 위해 제작되었습니다.<br>
+          ⛔ 무단복제금지 © Made by S574 ShinChan
+        </footer>
+    </div>
+  
+    <script>
+      const labels = [1500, 3000, 4400, 7500, 15000, 30000, 79000, 149000];
+      const prices = [1250, 2500, 3750, 6250, 12500, 25000, 62500, 125000];
+  
+      const leftContainer = document.getElementById('leftContainer');
+      const rightContainer = document.getElementById('rightContainer');
+  
+      prices.forEach((price, index) => {
+        createItem(leftContainer, 'l', index, labels[index], price);
+        createItem(rightContainer, 'r', index, labels[index], price);
+      });
+  
+      function createItem(container, side, index, label, price) {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-2 w-full p-2 rounded-lg';
+  
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `${side}chk${index}`;
+        checkbox.dataset.price = price;
+        checkbox.className = 'w-5 h-5 flex-shrink-0';
+  
+        const labelWrapper = document.createElement('div');
+        labelWrapper.className = 'w-24 text-right text-sm md:text-base font-semibold flex-shrink-0';
+        labelWrapper.innerText = label.toLocaleString();
+  
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'flex items-center gap-2 justify-end';
+  
+        const plusBtn = document.createElement('button');
+        plusBtn.type = 'button';
+        plusBtn.className = 'w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded flex justify-center items-center';
+        plusBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>`;
+        plusBtn.onclick = () => adjustQuantity(`${side}qty${index}`, 1);
+  
+        const quantity = document.createElement('input');
+        quantity.type = 'number';
+        quantity.min = 1;
+        quantity.value = 1;
+        quantity.id = `${side}qty${index}`;
+        quantity.className = 'w-16 text-center border rounded-lg p-2 text-base';
+  
+        const minusBtn = document.createElement('button');
+        minusBtn.type = 'button';
+        minusBtn.className = 'w-8 h-8 bg-gray-300 hover:bg-gray-400 rounded flex justify-center items-center';
+        minusBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg>`;
+        minusBtn.onclick = () => adjustQuantity(`${side}qty${index}`, -1);
+  
+        inputGroup.appendChild(plusBtn);
+        inputGroup.appendChild(quantity);
+        inputGroup.appendChild(minusBtn);
+  
+        div.appendChild(checkbox);
+        div.appendChild(labelWrapper);
+        div.appendChild(inputGroup);
+  
+        container.appendChild(div);
+      }
+  
+      function adjustQuantity(id, delta) {
+        const quantity = document.getElementById(id);
+        let current = parseInt(quantity.value || 1);
+        current += delta;
+        if (current < 1) current = 1;
+        quantity.value = current;
+      }
+  
+      function calculateLeft() {
+        let total = 0;
+        let checked = false;
+        const checkboxes = leftContainer.querySelectorAll('input[type="checkbox"]');
+  
+        checkboxes.forEach(checkbox => {
+          if (checkbox.checked) {
+            checked = true;
+            const quantityId = checkbox.id.replace('chk', 'qty');
+            const quantity = document.getElementById(quantityId);
+            total += parseInt(checkbox.dataset.price) * parseInt(quantity.value || 1);
+          }
+        });
+  
+        if (!checked) {
+          alert('체크된 항목이 없습니다.');
+          return;
+        }
+  
+        document.getElementById('lTotal').innerText = total.toLocaleString();
+      }
+  
+      function calculateRight() {
+        let total = 0;
+        let checked = false;
+        const checkboxes = rightContainer.querySelectorAll('input[type="checkbox"]');
+  
+        checkboxes.forEach((checkbox, index) => {
+          if (checkbox.checked) {
+            checked = true;
+            const quantityId = checkbox.id.replace('chk', 'qty');
+            const quantity = document.getElementById(quantityId);
+            total += labels[index] * parseInt(quantity.value || 1);
+          }
+        });
+  
+        if (!checked) {
+          alert('체크된 항목이 없습니다.');
+          return;
+        }
+  
+        document.getElementById('rTotal').innerText = total.toLocaleString();
+      }
+  
+      function resetForm(side) {
+        const container = side === 'l' ? leftContainer : rightContainer;
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        const quantities = container.querySelectorAll('input[type="number"]');
+  
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+        quantities.forEach(quantity => quantity.value = 1);
+  
+        document.getElementById(`${side}Total`).innerText = '0';
+      }
+  
+      function selectAll(side) {
+        const container = side === 'l' ? leftContainer : rightContainer;
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+  
+        if (checkboxes.length === 0) {
+          alert('선택할 체크박스가 없습니다.');
+          return;
+        }
+  
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+      }
+    </script>
+    <script>
+      document.addEventListener("contextmenu", event => event.preventDefault());
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+            (e.ctrlKey && (e.key === "U" || e.key === "S"))) 
+        {
+          e.preventDefault();
+        }
+      });
+    </script>
+  </body>
+  </html>
